@@ -6,30 +6,58 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Import routes
-// const apiRoutes = require("./routes/api");
-// app.use("/api", apiRoutes);
+const apiRouter = express.Router();
+app.use("/api", apiRouter);
 
-// Route mặc định
-const data = {
-  message: "Game Server API",
-  status: 200,
-};
-app.post("/api/server-game", (req, res) => {
-  console.log("req.body", req.body);
-  res.send(data);
-});
-
-app.get("", (req, res) => {
+apiRouter.get("", (req, res) => {
   return res.send("Hello World!");
 });
 
-// Lắng nghe cổng
+apiRouter.get("/coop_game/gameInfo", (req, res) => {
+  const response = {
+    status: "success",
+    data: {
+      username: "ntdat2110",
+      roleId: "1304332",
+      level: 15,
+      serverId: 1,
+      vipLevel: 3,
+    },
+  };
+
+  res.json(response);
+});
+
+apiRouter.post("/coop_game/callback_game", (req, res) => {
+  const response = {
+    status: "success",
+    message: "Topup confirmed",
+    data: {
+      walletBalance: 120000,
+      reward: "50 gems",
+    },
+  };
+
+  res.json(response);
+});
+
+apiRouter.get("/coop_game/support", (req, res) => {
+  res.json({
+    status: "success",
+    message: "Yêu cầu hỗ trợ đã được ghi nhận",
+    data: {
+      ticketId: "123456",
+      estimatedReplyTime: "24h",
+    },
+  });
+});
+
+apiRouter.use("/thumbnail", express.static("thumbnail"));
+
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running on http://localhost:${PORT}/api`);
 });
